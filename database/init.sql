@@ -1,11 +1,17 @@
 BEGIN;
 
-DROP TABLE IF EXISTS users, posts CASCADE;
+DROP TABLE IF EXISTS users, guests, scores CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR(25) NOT NULL,
   password VARCHAR(25) NOT NULL,
+);
+
+CREATE TABLE guests (
+  id SERIAL PRIMARY KEY,
+  guest VARCHAR(25) NOT NULL,
+  user_id INTEGER REFERENCES users(id),
 );
 
 CREATE TABLE scores (
