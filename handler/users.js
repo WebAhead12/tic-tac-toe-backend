@@ -34,7 +34,9 @@ const login = (req, res) => {
           }
         })
         .catch((error) => {
-          res.send({ error: "An expected error" });
+          res.send({
+            error: error.status === 401 ? error.message : "An expected error",
+          });
         });
     })
     .catch((error) => res.send({ error: error.message }));
