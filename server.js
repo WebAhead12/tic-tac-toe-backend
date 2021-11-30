@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const users = require("./handler/users");
 
 const port = process.env.PORT || 4000;
 
@@ -9,8 +10,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", (req, res) => {});
-app.post("/users/login", (req, res) => {});
-app.post("/logout", (req, res) => {});
+app.post("/users/login", users.login);
+app.post("/users/register", users.register);
 
 app.listen(port, () => {
   console.log(`listening on http://localhost:${port}`);
