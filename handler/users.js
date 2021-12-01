@@ -1,4 +1,5 @@
 const model = require("../model/users");
+const modelScore = require("../model/scores");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const utils = require("../utils/utilities");
@@ -8,6 +9,7 @@ dotenv.config();
 
 const SECRET = process.env.SECRET;
 
+//handle user login => check with the database
 const login = (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -42,8 +44,10 @@ const login = (req, res) => {
     .catch((error) => res.send({ error: error.message }));
 };
 
+//register new users (players)
 const register = (req, res) => {
   const account = req.body;
+
   //check if account exists.
   model
     .getUser(account.username)
@@ -53,6 +57,7 @@ const register = (req, res) => {
         utils.throwError(`${account.username} already taken`, 403);
       } else {
         //hash password then set a new account
+
         bcrypt
           .genSalt(10)
           .then((salt) => bcrypt.hash(account.password, salt))
@@ -61,6 +66,10 @@ const register = (req, res) => {
             model
               .setUser({ ...account, password: hash })
               .then(() => {
+                //after creating new user, use it id to insert to initialize the score table
+                model.getUserID(account.username).then((id) => {
+                  modelScore.setScore({ wins: 0, total: 0, userID: id });
+                });
                 //   res.redirect("/users/login");
                 res.send({ response: "successful" });
               })
@@ -79,4 +88,22 @@ const register = (req, res) => {
     });
 };
 
-module.exports = { login, register };
+//return information about the user e.g. id, username, name
+const userInfo = (req, res) => {
+  const [bearer, token] = req.body.authorization.split(" ");
+
+  const id = jwt.verify(token, SECRET).user; //decrypt token to get the id
+
+  model //trick pritter extension
+    .getUserIfnoByID(id)
+    .then((userInfo) => {
+      if (!userInfo.length) throw new Error("User doesnt exist");
+      else {
+        const [info] = userInfo; //info is an object that contains the information needed.
+        res.send(info);
+      }
+    })
+    .catch((error) => res.status(404).send({ error: error.message }));
+};
+
+module.exports = { login, register, userInfo };

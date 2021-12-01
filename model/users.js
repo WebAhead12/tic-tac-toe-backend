@@ -7,18 +7,41 @@ const getUser = (user) => {
 
     if (!users.length)
       throw new Error(`Something wrong, could not get data from the database`);
-
     return users.filter((account) => account.username == user); //array with one account if exists
+  });
+};
+
+//get User ID
+const getUserID = (user) => {
+  return getUser(user).then((accArray) => {
+    //account array of 1 item
+    console.log(accArray);
+    const [account] = accArray;
+    if (!accArray.length) {
+      throw new Error(`This ${user} doesn't exist`);
+    } else {
+      return account.id;
+    }
   });
 };
 
 //insert registered user to database
 const setUser = (account) => {
-  const values = [account.username, account.password];
+  const values = [account.username, account.name, account.password];
   return db.query(
-    `INSERT INTO users(username, password) VALUES($1, $2)`,
+    `INSERT INTO users(username, name, password) VALUES($1, $2, $3)`,
     values
   );
 };
 
-module.exports = { getUser, setUser };
+//get user info by id
+const getUserIfnoByID = (id) => {
+  return db
+    .query(`SELECT id, username, name FROM users WHERE id = ${id}`)
+    .then((result) => {
+      const userInfo = result.rows;
+      return userInfo;
+    });
+};
+
+module.exports = { getUser, setUser, getUserIfnoByID, getUserID };
