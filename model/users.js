@@ -34,7 +34,7 @@ const setUser = (account) => {
 };
 
 //get user info by id
-const getUserIfnoByID = (id) => {
+const getUserInfoByID = (id) => {
   return db
     .query(`SELECT id, username, name FROM users WHERE id = ${id}`)
     .then((result) => {
@@ -43,4 +43,4 @@ const getUserIfnoByID = (id) => {
     });
 };
 
-module.exports = { getUser, setUser, getUserIfnoByID, getUserID };
+module.exports = { getUser, setUser, getUserInfoByID, getUserID };

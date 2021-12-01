@@ -75,7 +75,7 @@ const register = (req, res) => {
               .catch((error) =>
                 res.send({
                   error:
-                    "Somthing worng, Unable to set an account | " +
+                    "Something wrong, unable to create an account | " +
                     error.message,
                 })
               )
@@ -92,7 +92,7 @@ const userInfo = (req, res) => {
   const token = req.token;
   const id = jwt.verify(token, SECRET).user; //decrypt token to get the id
   model //trick prettier extension
-    .getUserIfnoByID(id)
+    .getUserInfoByID(id)
     .then((userInfo) => {
       if (!userInfo.length) throw new Error("User doesnt exist");
       else {
