@@ -15,7 +15,6 @@ const getUser = (user) => {
 const getUserID = (user) => {
   return getUser(user).then((accArray) => {
     //account array of 1 item
-    console.log(accArray);
     const [account] = accArray;
     if (!accArray.length) {
       throw new Error(`This ${user} doesn't exist`);
@@ -27,7 +26,7 @@ const getUserID = (user) => {
 
 //insert registered user to database
 const setUser = (account) => {
-  const values = [account.username, account.name, account.password];
+  const values = [account.username, account.fullName, account.password];
   return db.query(
     `INSERT INTO users(username, name, password) VALUES($1, $2, $3)`,
     values

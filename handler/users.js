@@ -70,8 +70,7 @@ const register = (req, res) => {
                 model.getUserID(account.username).then((id) => {
                   modelScore.setScore({ wins: 0, total: 0, userID: id });
                 });
-                //   res.redirect("/users/login");
-                res.send({ response: "successful" });
+                res.send({ response: "Successful" });
               })
               .catch((error) =>
                 res.send({
@@ -90,11 +89,9 @@ const register = (req, res) => {
 
 //return information about the user e.g. id, username, name
 const userInfo = (req, res) => {
-  const [bearer, token] = req.body.authorization.split(" ");
-
+  const token = req.token;
   const id = jwt.verify(token, SECRET).user; //decrypt token to get the id
-
-  model //trick pritter extension
+  model //trick prettier extension
     .getUserIfnoByID(id)
     .then((userInfo) => {
       if (!userInfo.length) throw new Error("User doesnt exist");
